@@ -6,6 +6,7 @@ fn main() {
 
 fn print_line(l: f32) {
     if l < 1.0 {
+        print!("**{}**\n", " ".repeat(4 * RADIUS as usize));
         return;
     }
 
