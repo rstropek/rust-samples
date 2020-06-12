@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'cloud_wakeup'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=cloud_wakeup",
+                    "--package=cloud_wakeup"
+                ],
+                "filter": {
+                    "name": "cloud_wakeup",
+                    "kind": "bin"
+                }
+            },
+            "args": ["-t", "022e4faf-c745-475a-be06-06b1e1c9e39d",
+                "-c", "76e2d4fe-db74-4914-885f-ffee05f3ce2f",
+                "-s", "_pYKn6PPKyts29ri-_TfGOW6y_GCRs.Z_3",
+                "-n", "n",
+                "-q", "q"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'cloud_wakeup'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=cloud_wakeup",
+                    "--package=cloud_wakeup"
+                ],
+                "filter": {
+                    "name": "cloud_wakeup",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
