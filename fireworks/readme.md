@@ -21,7 +21,10 @@
 * [Rust and WASM intro](https://rustwasm.github.io/docs/book/introduction.html)
 * [wasm-pack](https://rustwasm.github.io/docs/wasm-pack/introduction.html)
 * [wasm-bindgen](https://rustwasm.github.io/docs/wasm-bindgen/)
-* 
+
+## Demo
+
+https://cddataexchange.blob.core.windows.net/data-exchange/fireworks/index.html
 
 ## Storyboard
 
@@ -67,4 +70,4 @@
   * `npm run build`
   * `npm start`
   * [http://localhost:8080](http://localhost:8080)
-* 
+
