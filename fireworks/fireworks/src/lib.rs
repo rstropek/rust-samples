@@ -8,6 +8,8 @@ use wasm_bindgen::prelude::*;
 #[cfg(feature = "console_log")]
 use web_sys::console;
 
+use serde::{Serialize, Deserialize};
+
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
 #[cfg(feature = "wee_alloc")]
@@ -18,6 +20,14 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 static MAX_ROCKETS: usize = 100;
 static PARTICLES_PER_ROCKET: usize = 300;
 static PARTICLE_LIFESPAN: f64 = 150f64;
+
+// Represents a rocket. Note use of serde for JSON support
+#[derive(Serialize, Deserialize)]
+pub struct Rocket {
+    pub rgb: u32,
+    pub x: f64,
+    pub height: f64,
+}
 
 // Note `wasm_bindgen` macro here. Generates the necessary code
 // that makes type available in JS.
@@ -306,6 +316,15 @@ impl Firework {
                 }
             }
         }
+    }
+
+    pub fn add_rocket(&mut self, rocket: &JsValue) -> Result<(), JsValue> {
+        // Note deserialization of JSON using Serde
+        let rocket: Rocket = rocket.into_serde().unwrap();
+
+        self.add(((rocket.rgb & 0xff0000u32) >> 8 >> 8) as u8, ((rocket.rgb & 0xff00u32) >> 8) as u8, (rocket.rgb & 0xffu32) as u8, rocket.x, rocket.height)?;
+
+        Result::Ok(())
     }
 
     /// Get size of rocket buffer

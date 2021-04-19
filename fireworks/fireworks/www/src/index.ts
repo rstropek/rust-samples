@@ -1,5 +1,5 @@
 import * as fw from "fireworks";
-import { memory } from "fireworks/fireworks_bg.wasm";
+import { firework_add_rocket, memory } from "fireworks/fireworks_bg.wasm";
 import * as p5 from 'p5';
 
 const firework = fw.Firework.new();
@@ -12,14 +12,34 @@ const states = new Uint8Array(memory.buffer, firework.states(), firework.rocket_
 const particles = new Float64Array(memory.buffer, firework.particles(), firework.particle_buffer_size * 2);
 const particle_states = new Uint8Array(memory.buffer, firework.particle_states(), firework.particle_buffer_size);
 
+// Just a helper function
+function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
 async function setup(p: p5) {
     p.createCanvas(p.windowWidth, p.windowHeight);
 
+    firework.add_rocket({ rgb: 0xffff00, x: 400, height: 170 });
+
     // Add rockets
-    firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
-    setInterval(() => {
-        firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
-    }, 1000);
+    //firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
+    // setInterval(() => {
+    //     firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
+    // }, 2500);
+
+    // (async () => {
+    //     while (true) {
+    //         firework.add_rocket({ rgb: 0xff0000, x: 100, height: 100 });
+    //         await delay(1000);
+    //         firework.add_rocket({ rgb: 0x00ff00, x: 200, height: 125 });
+    //         await delay(1100);
+    //         firework.add_rocket({ rgb: 0x0000ff, x: 300, height: 150 });
+    //         await delay(1200);
+    //         firework.add_rocket({ rgb: 0xffffff, x: 400, height: 175 });
+    //         await delay(1300);
+    //     }
+    // })();
 }
 
 function draw(p: p5) {
