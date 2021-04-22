@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html style="margin: 0; padding: 0;">
+  <head>
+    <meta charset="utf-8">
+    <title>🦇 Raffle 🦀</title>
+    <style>
+      body {
+        background-color: #f7f7f8;
+        position: relative;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      #batman {
+        width: 50%;
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-200%, -50%);
+        transition: none;
+      }
+
+      .start #batman {
+        transform: translate(-50%, -50%);
+        transition: transform 6s ease;
+      }
+
+      #pow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 100%;
+        display: none;
+        transform: translate(-50%, -50%);
+      }
+
+      .end #pow {
+        display: block;
+      }
+
+      h1 {
+        font-family: "Bangers";
+        font-size: 60px;
+        font-weight: normal;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        margin: 0;
+      }
+
+      h1.in {
+        transition: opacity 2s ease;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; overflow: hidden">
+    <audio id="sound" src="https://cddataexchange.blob.core.windows.net/data-exchange/batman/nana.mp3"></audio>
+
+    <audio src="https://cddataexchange.blob.core.windows.net/data-exchange/batman/bb.mp3" id="bomb"></audio>
+
+    <img id="batman" src="https://cddataexchange.blob.core.windows.net/data-exchange/batman/batman_run.gif" />
+
+    <img id="pow" src="https://cddataexchange.blob.core.windows.net/data-exchange/batman/pow.gif" alt="" />
+
+    <h1 id="winner">Stefan Baumgartner</h1>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Bangers"
+      rel="stylesheet"
+    />
+
+  </body>
+</html>
