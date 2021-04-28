@@ -1,5 +1,5 @@
 import * as fw from "fireworks";
-import { firework_add_rocket, memory } from "fireworks/fireworks_bg.wasm";
+import { memory } from "fireworks/fireworks_bg.wasm";
 import * as p5 from 'p5';
 
 const firework = fw.Firework.new();
@@ -20,13 +20,14 @@ function delay(ms: number) {
 async function setup(p: p5) {
     p.createCanvas(p.windowWidth, p.windowHeight);
 
-    firework.add_rocket({ rgb: 0xffff00, x: 400, height: 170 });
+    //firework.add_rocket({ rgb: 0xffff00, x: 400, height: 170 });
 
     // Add rockets
+    firework.add_rocket({ rgb: 0xff0000, x: Math.random() * p.windowWidth, height: 170 });
     //firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
-    // setInterval(() => {
-    //     firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
-    // }, 2500);
+    setInterval(() => {
+        firework.add(Math.random() * 256, Math.random() * 256, Math.random() * 256, Math.random() * p.windowWidth, Math.random() * 100 + 100);
+    }, 300);
 
     // (async () => {
     //     while (true) {

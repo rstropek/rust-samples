@@ -319,6 +319,8 @@ impl Firework {
         }
     }
 
+    // Note the use of JsValue. Read more at 
+    // https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/struct.JsValue.html
     pub fn add_rocket(&mut self, rocket: &JsValue) -> Result<(), JsValue> {
         // Note deserialization of JSON using Serde
         let rocket: Rocket = rocket.into_serde().unwrap();
@@ -340,6 +342,7 @@ impl Firework {
         MAX_ROCKETS * PARTICLES_PER_ROCKET
     }
 
+    // Calculate index of praticle based on rocket and particle ID
     pub fn get_particle_index(rix: usize, pix: usize) -> usize {
         rix * PARTICLES_PER_ROCKET + pix
     }
@@ -369,7 +372,7 @@ impl Firework {
         self.particles.as_ptr()
     }
 
-    /// Get
+    /// Get max particles per rocket
     pub fn get_max_particles_per_rocket(&self) -> usize {
         PARTICLES_PER_ROCKET
     }
