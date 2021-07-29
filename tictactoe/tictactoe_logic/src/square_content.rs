@@ -85,7 +85,7 @@ mod tests {
         assert_eq!(SquareContent::X, SquareContent::from('X'));
         assert_eq!(SquareContent::X, 'X'.into());
         assert_eq!('X', char::from(SquareContent::X));
-        assert_eq!('X', SquareContent::X.into());
+        assert_eq!('X', Into::<char>::into(SquareContent::X));
     }
 
     #[test]
