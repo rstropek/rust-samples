@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <script type="module">
+      import init, { fibonacci, fibonacciMany } from './pkg/perf_fib.js';
+      
+      async function run() {
+        await init();
+
+        const result = fibonacci(10);
+        console.log(`The result is ${result}`);
+
+        const resultMany = fibonacciMany(2, 10, 100, true);
+        console.log(`The 2nd result is ${resultMany}`);
+    }
+
+      run();
+    </script>
+  </body>
+</html>
+
