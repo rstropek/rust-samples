@@ -1,0 +1,386 @@
+{
+	"0010-something-on-stack": {
+		"prefix": "rs",
+		"body": [
+			"// Let's put something on the stack",
+			"let on_stack = 42;",
+			"println!(\"{:?} at {:p}\", on_stack, &on_stack);",
+			""
+		]
+	},
+	"0020-something-on-heap": {
+		"prefix": "rs",
+		"body": [
+			"// Now let's put something on the heap",
+			"let on_heap = Box::new(42);",
+			"println!(\"{:?} at {:p} pointed to by {:p}\", on_heap, on_heap, &on_heap);",
+			""
+		]
+	},
+	"0030-more-complex-on-heap": {
+		"prefix": "rs",
+		"body": [
+			"// Let's put something more complex on the heap",
+			"let mut vec_on_heap = vec![1, 2, 3, 4, 5, 6];",
+			"println!(\"{:?} at {:p}\", vec_on_heap, &vec_on_heap);",
+			"println!(\"{:?} at {:p}\", vec_on_heap[0], &vec_on_heap[0]);",
+			""
+		],
+	},
+	"0040-move-around": {
+		"prefix": "rs",
+		"body": [
+			"// Let's put anything on the heap just to have at least one ",
+			"// allocation before the next experiment.",
+			"let _something_on_heap = Box::new(42);",
+			"",
+			"// Now let's append something to our vector. What happened",
+			"// to our pointers?",
+			"// Learning: Sometimes, Rust moves your data around in memory.",
+			"vec_on_heap.push(7);",
+			"println!(\"{:?} at {:p}\", vec_on_heap, &vec_on_heap);",
+			"println!(\"{:?} at {:p}\", vec_on_heap[0], &vec_on_heap[0]);",
+			""
+		]
+	},
+	"0050-string-on-heap": {
+		"prefix": "rs",
+		"body": [
+			"// And finally: A string on the heap.",
+			"let string_on_heap = String::from(\"FooBar\");",
+			"println!(\"{:?} at {:p} point to by {:p}\", string_on_heap, string_on_heap.as_ptr(), &string_on_heap);",
+			""
+		]
+	},
+	"0060-string-data-segment": {
+		"prefix": "rs",
+		"body": [
+			"// Is there something else than stack and heap?",
+			"// Yes: Data segment of your program (e.g. &'static str)",
+			"let str_on_heap: &'static str = \"FooBar\";",
+			"println!(\"{:?} at {:p} point to by {:p}\", str_on_heap, str_on_heap.as_ptr(), &str_on_heap);",
+			""
+		]
+	},
+	"0100-vector2d": {
+		"prefix": "rs",
+		"body": [
+			"#[derive(Clone, Debug)]",
+			"struct Vector2d {",
+			"    x: f64,",
+			"    y: f64,",
+			"}",
+			""
+		]
+	},
+	"0110-array-on-heap": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    // Allocate array on heap",
+			"    let numbers = vec![1, 2, 3, 5, 8];",
+			"    println!(\"{:?}\", numbers);",
+			"}",
+			""
+		]
+	},
+	"0120-move-ownership": {
+		"prefix": "rs",
+		"body": [
+			"// Move ownership to other_numbers",
+			"let other_numbers = numbers;",
+			"println!(\"{:?}\", other_numbers);",
+			"",
+			"// Now we cannot access numbers anymore",
+			"// because value was moved.",
+			"// println!(\"{:?}\", numbers); // -> does NOT COMPILE",
+			""
+		]
+	},
+	"0130-clone": {
+		"prefix": "rs",
+		"body": [
+			"// Make a copy -> no move of ownership",
+			"let cloned_numbers = other_numbers.clone();",
+			"println!(\"clone = {:?}, source = {:?}\", cloned_numbers, other_numbers);",
+			""
+		]
+	},
+	"0140-struct-on-heap": {
+		"prefix": "rs",
+		"body": [
+			"// Let's put a custom struct on the heap and clone it -> deep copy.",
+			"// Try removing Clone trait from Vector2d -> does not compile.",
+			"let number_on_heap = Box::new(Vector2d { x: 1.0, y: 2.0 });",
+			"let another_number_on_heap = Clone::clone(&number_on_heap);",
+			"println!(",
+			"    \"{:?} at {:p}\",",
+			"    another_number_on_heap, another_number_on_heap",
+			");",
+			"println!(\"{:?} at {:p}\", number_on_heap, number_on_heap);"
+		]
+	},
+	"0200-main-with-numbers": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    let numbers = vec![1, 2, 3, 5, 8];",
+			"}"
+		]
+	},
+	"0210-consume": {
+		"prefix": "rs",
+		"body": [
+			"",
+			"fn consume(numbers: Vec<i32>) {",
+			"    let sum: i32 = numbers.iter().sum();",
+			"    println!(\"The sum is {}\", sum);",
+			"    // numbers gets out of scope -> free memory",
+			"}",
+			""
+		]
+	},
+	"0220-call-consume": {
+		"prefix": "rs",
+		"body": [
+			"consume(numbers); // Gives ownership to `consume`",
+			""
+		]
+	},
+	"0230-produce": {
+		"prefix": "rs",
+		"body": [
+			"",
+			"fn produce() -> Vec<i32> {",
+			"    let mut numbers: Vec<i32> = Vec::new();",
+			"    for i in 0..4 {",
+			"        numbers.push(i);",
+			"    }",
+			"    numbers // Gives ownership to caller",
+			"}",
+			""
+		]
+	},
+	"0240-call-produce": {
+		"prefix": "rs",
+		"body": [
+			"let produced_numbers = produce(); // Takes ownership",
+			"println!(\"{:?}\", produced_numbers);",
+			"// produced_numbers gets of of scope -> free memory",
+			""
+		]
+	},
+	"0300-vector2d": {
+		"prefix": "rs",
+		"body": [
+			"#[derive(Debug)]",
+			"struct Vector2d {",
+			"    x: f64,",
+			"    y: f64,",
+			"}",
+			"",
+			"impl Drop for Vector2d {",
+			"    fn drop(&mut self) {",
+			"        println!(\"Dropping {:?}\", self);",
+			"    }",
+			"}",
+			""
+		]
+	},
+	"0310-consume-produce": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    let v = Vector2d { x: 1.0, y: 2.0 };",
+			"    consume_vector(v);",
+			"    println!(\"After consume_vector\");",
+			"    let _v = produce_vector();",
+			"    println!(\"After produce_vector\");",
+			"}",
+			"",
+			"fn consume_vector(_v: Vector2d) {",
+			"    println!(\"In consume_vector\");",
+			"}",
+			"",
+			"fn produce_vector() -> Vector2d {",
+			"    Vector2d { x: 3.0, y: 4.0 }",
+			"}"
+		]
+	},
+	"0410-main-with-numbers": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    let mut numbers = vec![1, 2, 3, 5, 8];",
+			"",
+			"    println!(\"{:?}\", numbers);",
+			"}",
+			""
+		]
+	},
+	"0420-consume-borrow": {
+		"prefix": "rs",
+		"body": [
+			"",
+			"fn consume(numbers: &Vec<i32>) -> i32 {",
+			"    // numbers is read-only, cannot be mutated",
+			"    //numbers.push(42);  // -> does NOT COMPILE",
+			"    let sum: i32 = numbers.iter().sum();",
+			"    sum",
+			"}"
+		]
+	},
+	"0430-call-consume": {
+		"prefix": "rs",
+		"body": [
+			"println!(\"The sum is {}\", consume(&numbers)); // Passes reference, keeps ownership"
+		]
+	},
+	"0440-add-and-consume": {
+		"prefix": "rs",
+		"body": [
+			"",
+			"fn add_and_consume(numbers: &mut Vec<i32>) -> i32 {",
+			"    numbers.push(42);",
+			"    consume(numbers)",
+			"}"
+		]
+	},
+	"0450-call-add-and-consume": {
+		"prefix": "rs",
+		"body": [
+			"println!(\"The sum is {}\", add_and_consume(&mut numbers)); // Mutable reference, keeps ownership"
+		]
+	},
+	"0500-multi-prod-single-cons": {
+		"prefix": "rs",
+		"body": [
+			"use std::time::Duration;",
+			"use std::sync::mpsc;",
+			"use std::thread;",
+			"",
+			"fn main() {",
+			"  let (sender, receiver) = mpsc::channel::<i32>();",
+			"",
+			"  thread::spawn(move || {",
+			"    for i in 0..5 {",
+			"      sender.send(i).unwrap(); // Owner of sender",
+			"      thread::sleep(Duration::from_millis(500));",
+			"    }",
+			"  });",
+			"",
+			"  loop {",
+			"    match receiver.recv() { // owner of receiver",
+			"      Ok(result) => println!(\"Received: {}\", result),",
+			"      Err(_) => {",
+			"        println!(\"Done!\");",
+			"        break;",
+			"      }",
+			"    };",
+			"  }",
+			"}",
+			""
+		]
+	},
+	"0600-my-precious-struct": {
+		"prefix": "",
+		"body": [
+			"use std::rc::Rc;",
+			"",
+			"#[derive(Debug)]",
+			"struct MyPrecious {",
+			"    ring: i32,",
+			"}",
+			"",
+			"impl Drop for MyPrecious {",
+			"    fn drop(&mut self) {",
+			"        println!(\"Dropping {:?}\", self);",
+			"    }",
+			"}"
+		]
+	},
+	"0610-without-rc": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    let mine = Box::new(MyPrecious{ ring: 21 });",
+			"    let also_mine = mine;",
+			"    //println!(\"{:?}\", mine); // Does not work",
+			"    println!(\"{:?}\", also_mine.ring);",
+			"}",
+			""
+		]
+	},
+	"0620-rc": {
+		"prefix": "rs",
+		"body": [
+			"let mine = Rc::new(MyPrecious{ ring: 42 });",
+			"{",
+			"    let also_mine = Clone::clone(&mine);",
+			"    println!(\"{:?} {:p}\", mine.ring, mine.as_ref());",
+			"    println!(\"{:?} {:p}\", also_mine.ring, also_mine.as_ref());",
+			"    println!(\"Ref count inside: {:?}\", Rc::strong_count(&also_mine));",
+			"}",
+			"",
+			"println!(\"Ref count outside: {:?}\", Rc::strong_count(&mine));",
+			""
+		]
+	},
+	"0700-vector2d": {
+		"prefix": "rs",
+		"body": [
+			"#[derive(Debug)]",
+			"struct Vector2d {",
+			"    x: f32,",
+			"    y: f32,",
+			"}",
+			"",
+			"impl Drop for Vector2d {",
+			"    fn drop(&mut self) {",
+			"        println!(\"Dropping {:?}\", self);",
+			"    }",
+			"}"
+		]
+	},
+	"0710-find-longest-without-lifetime": {
+		"prefix": "rs",
+		"body": [
+			"fn find_longest_vector(v1: &Vector2d, v2: &Vector2d) -> &Vector2d {",
+			"    if (v1.x * v1.y).sqrt() > (v2.x + v2.y).sqrt() {",
+			"        v1",
+			"    } else {",
+			"        v2",
+			"    }",
+			"}"
+		]
+	},
+	"0720-find-longest-with-lifetime": {
+		"prefix": "rs",
+		"body": [
+			"fn find_longest_vector<'a>(v1: &'a Vector2d, v2: &'a Vector2d) -> &'a Vector2d {",
+			"    if (v1.x * v1.y).sqrt() > (v2.x + v2.y).sqrt() {",
+			"        v1",
+			"    } else {",
+			"        v2",
+			"    }",
+			"}"
+		]
+	},
+	"0730-use-find-longest": {
+		"prefix": "rs",
+		"body": [
+			"fn main() {",
+			"    let v1 = &Vector2d { x: 1.0, y: 1.0 };",
+			"    let res: &Vector2d;",
+			"    let v2 = &Vector2d { x: 2.0, y: 2.0 };",
+			"    {",
+			"        //let v2 = &Vector2d { x: 2.0, y: 2.0 }; // Would not work",
+			"        res = find_longest_vector(v1, v2);",
+			"    }",
+			"",
+			"    println!(\"{:?}\", res);",
+			"}",
+			""
+		]
+	}
+}

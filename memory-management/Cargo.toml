@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "005-Stack-Heap",
+    "010-Ownership",
+    "020-Give-Ownership",
+    "025-Give-Ownership-2",
+    "030-Borrow",
+    "035-MpSc",
+    "040-Rc",
+    "050-Lifetimes",
+]
