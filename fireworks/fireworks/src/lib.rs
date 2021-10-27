@@ -70,7 +70,7 @@ impl StatesExt for States {
 
         // Note match syntax over an Option enum.
         match free_index {
-            None => return Err("No inactive element".into()),
+            None => Err("No inactive element".into()),
             Some(ix) => Result::Ok(ix),
         }
     }
@@ -239,7 +239,7 @@ impl Firework {
         // Calculate rocket parameters
         let p = RocketParameter {
             spread: random() * 20f64 + 10f64,
-            velocity: (height.sqrt() * -1f64) / 2f64 * f64::from(height) / 100f64,
+            velocity: (height.sqrt() * -1f64) / 2f64 * height / 100f64,
             acceleration: 0f64,
         };
         let c = RocketColor { red, green, blue };
