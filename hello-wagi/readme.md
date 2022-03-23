@@ -108,6 +108,9 @@ This sample uses the [*Handlebars*](https://docs.rs/crate/handlebars/latest) tem
 
 This sample demonstrates how to make HTTP requests using [*wasi-experimental-http*](https://github.com/deislabs/wasi-experimental-http). It implements a solving hack for the popular [*Wordle* game](https://www.nytimes.com/games/wordle/index.html).
 
+The Wordle "solver" algorithm is based on a TypeScript sample written by @blaumeise20 (https://github.com/blaumeise20/blaumeise20). Thank you for allowing me to use it for this demo.
+
+
 * Set *allowed_hosts*.
 
   ```toml

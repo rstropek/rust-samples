@@ -1,3 +1,7 @@
+// The Wordle "solver" algorithm is based on a TypeScript sample written
+// by @blaumeise20 (https://github.com/blaumeise20/blaumeise20). Thank
+// you for allowing me to use it for this demo.
+
 use std::str::from_utf8;
 use anyhow::{Result, anyhow};
 use http::{request, StatusCode};
