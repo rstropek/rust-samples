@@ -1,0 +1,16 @@
+set dotenv-load
+
+watch sample:
+    watchexec -e rs -r -w ./{{sample}} just run {{sample}}
+
+serve:
+    npx browser-sync start -c bs-config.js
+
+run sample: (build sample "--target wasm32-wasi")
+    wagi -c modules.toml --env TEMPLATE_PATH="/templates" --log-dir ./logs
+
+run-native sample:
+    cd {{justfile_directory()}}/{{sample}}; export TEMPLATE_PATH=$(pwd)/templates; echo '{"foo": "bar"}' | cargo run
+
+build sample target:
+    cd {{justfile_directory()}}/{{sample}}; cargo build {{target}}

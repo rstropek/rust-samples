@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Solver</title>
+    <style>
+        input[type="number"] {
+            max-width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wordle Solver</h1>
+
+    <form action="/level4" method="get">
+        <label for="year">Year:</label>
+        <input type="number" name="year" id="year" />
+        <label for="month">Month:</label>
+        <input type="number" name="month" id="month" />
+        <label for="Day">Day:</label>
+        <input type="number" name="day" id="day" />
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        const today = new Date();
+        document.getElementById('year').value = today.getFullYear();
+        document.getElementById('month').value = today.getMonth() + 1;
+        document.getElementById('day').value = today.getDate();
+    </script>
+</body>
+</html>

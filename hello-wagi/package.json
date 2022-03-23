@@ -1,0 +1,8 @@
+{
+  "name": "hello-wagi",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {
+    "browser-sync": "^2.27.9"
+  }
+}

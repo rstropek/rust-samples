@@ -1,0 +1,27 @@
+[[module]]
+route = "/level1-ping"
+module = "./target/wasm32-wasi/debug/level1.wasm"
+
+# [[module]]
+# route = "/ping-oci"
+# module = "oci:rustlinzwasm.azurecr.io/wagi-level1-oci:latest"
+
+[[module]]
+route = "/level2"
+module = "./target/wasm32-wasi/debug/level2.wasm"
+
+[[module]]
+route = "/level3"
+module = "./target/wasm32-wasi/debug/level3.wasm"
+volumes = {"/templates" = "/home/rainer/github/rust-samples/hello-wagi/level3/templates"}
+
+[[module]]
+route = "/static/..."
+module = "./fileserver.gr.wasm"
+volumes = {"/" = "/home/rainer/github/rust-samples/hello-wagi/static"}
+
+[[module]]
+route = "/level4"
+module = "./target/wasm32-wasi/debug/level4.wasm"
+allowed_hosts = ["https://www.nytimes.com"]
+http_max_concurrency = 2
