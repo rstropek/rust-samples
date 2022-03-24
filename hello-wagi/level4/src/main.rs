@@ -96,5 +96,8 @@ fn main() {
 
     // Return HTML result
     println!();
-    println!("<html><body><p>The Wordle result for {year}-{month}-{day} is <b>{word}</b>. You're welcome!</body></html>");
+    println!("<html><body>");
+    println!("<p>The Wordle result for {year}-{month}-{day} is <b>{word}</b>. You're welcome!</p>");
+    println!("<p>Go on and try it at <a href='https://www.nytimes.com/games/wordle/index.html'>https://www.nytimes.com/games/wordle/index.html</a>.</p>");
+    println!("</body></html>");
 }

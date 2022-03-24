@@ -1,14 +1,7 @@
-@host = http://localhost:8080
+GET http://localhost:3000/level2
 
 ###
-GET {{host}}/ping
-Accept: text/html
-
-###
-GET {{host}}/level2
-
-###
-POST {{host}}/level2?foo=bar
+POST http://localhost:3000/level2?foo=bar
 Content-Type: application/json
 
 {
@@ -16,7 +9,7 @@ Content-Type: application/json
 }
 
 ###
-POST {{host}}/level3/file?foo=bar
+POST http://localhost:3000/level3/file?foo=bar
 Content-Type: application/json
 
 {
@@ -24,7 +17,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}/level3?foo=bar
+GET http://localhost:3000/level3?foo=bar
 
 ###
-GET {{host}}/level4
+GET http://localhost:3000/level4
