@@ -1,0 +1,14 @@
+POST http://localhost:3000/level2?foo=bar
+Content-Type: application/json
+
+{
+    "Foo": "Bar"
+}
+
+###
+POST http://localhost:3000/level3?foo=bar
+Content-Type: application/json
+
+{
+    "foo": "bar"
+}

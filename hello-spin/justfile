@@ -1,0 +1,7 @@
+set dotenv-load
+
+build:
+    spin build
+
+run: (build)
+    export RUST_LOG=spin=trace; spin up

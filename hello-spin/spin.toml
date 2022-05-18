@@ -1,0 +1,33 @@
+spin_version = "1"
+authors = ["Rainer Stropek <rainer@software-architects.at>"]
+description = "hello_spin"
+name = "hello_spin"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "level1"
+source = "target/wasm32-wasi/release/level1.wasm"
+[component.trigger]
+route = "/level1/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"
+
+[[component]]
+id = "level2"
+source = "target/wasm32-wasi/release/level2.wasm"
+[component.trigger]
+route = "/level2/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"
+
+[[component]]
+id = "level3"
+source = "target/wasm32-wasi/release/level3.wasm"
+files = [ { source = "level3/templates/", destination = "/templates" } ]
+[component.environment]
+TEMPLATE_PATH = "/templates"
+[component.trigger]
+route = "/level3/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"

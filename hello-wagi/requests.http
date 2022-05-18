@@ -1,4 +1,4 @@
-GET http://localhost:3000/level2
+GET http://localhost:3000/ping-oci
 
 ###
 POST http://localhost:3000/level2?foo=bar
@@ -20,4 +20,10 @@ Content-Type: application/json
 GET http://localhost:3000/level3?foo=bar
 
 ###
-GET http://localhost:3000/level4
+GET http://localhost:3000/level4?year=2022&month=5&day=18
+
+###
+GET https://www.nytimes.com/games/wordle/index.html
+
+###
+GET https://www.nytimes.com/games/wordle/main.9622bc55.js
