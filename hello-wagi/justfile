@@ -6,6 +6,9 @@ watch sample:
 serve:
     npx browser-sync start -c bs-config.js
 
+wasmtime: (build "level0_wasmtime" "--target wasm32-wasi")
+    wasmtime target/wasm32-wasi/debug/level0_wasmtime.wasm
+
 run sample: (build sample "--target wasm32-wasi")
     wagi -c modules.toml --env TEMPLATE_PATH="/templates" --log-dir ./logs
 
