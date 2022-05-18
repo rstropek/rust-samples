@@ -17,7 +17,7 @@ For that reason, you have to install the tools mentioned above:
 * Install [*watchexec*](https://github.com/watchexec/watchexec): `cargo install watchexec-cli`
 * [Install *wasm-to-oci*](https://github.com/engineerd/wasm-to-oci#installation)
   * In order to try the OCI-related sample, you will need an [*Azure Container Registry*](https://azure.microsoft.com/en-us/services/container-registry/) (Docker Hub is at the time of writing not supported). Login to ACR using `az azr login`. In this documentation, we assume that your Container Registry is called `rustlinzwasm`. Change it accordingly if neccessary.
-* Download [*WAGI Fileserver*](https://github.com/deislabs/wagi-fileserver) into the root folder or the sample: `curl -OL https://github.com/deislabs/wagi-fileserver/releases/download/v0.6.0/fileserver.gr.wasm`
+* Download [*WAGI Fileserver*](https://github.com/deislabs/wagi-fileserver) into the root folder of the sample: `curl -OL https://github.com/deislabs/wagi-fileserver/releases/download/v0.6.0/fileserver.gr.wasm`
 
 ## Development
 
