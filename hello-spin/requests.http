@@ -1,3 +1,6 @@
+GET http://localhost:3000/level1
+
+###
 POST http://localhost:3000/level2?foo=bar
 Content-Type: application/json
 

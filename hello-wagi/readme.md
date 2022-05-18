@@ -26,6 +26,10 @@ For that reason, you have to install the tools mentioned above:
 * Open a browser window at [http://localhost:8080](http://localhost:8080) (append path as needed). For those samples that generate HTML, it will auto-reload whenever you change the Rust sourcecode or the [*Handlebar* templates](templates). For samples that generate plain text, you have to reload manually.
 * Note that you can access the *Browsersync* UI at [http://localhost:8081](http://localhost:8081)
 
+## Slides
+
+You can find accompanying slides for this sample [online](https://slides.com/rainerstropek/wasm-container-killer/fullscreen).
+
 ## Samples
 
 ### [Level 1](level1)
