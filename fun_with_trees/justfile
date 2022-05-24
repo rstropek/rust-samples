@@ -1,0 +1,14 @@
+# General helper tasks
+build TARGET:
+    cargo build {{TARGET}}
+run APP TARGET:
+    cargo run TARGET --bin APP  
+
+# Build tasks
+build-wasi: (build "--target=wasm32-wasi")
+build-linux: (build "--target=x86_64-unknown-linux-gnu")
+
+# Run tasks
+run-wasi: (build-wasi)
+    wasmtime ./target/wasm32-wasi/debug/fractal_tree_cli.wasm
+run-linux: (run "fractal_tree_cli" "--target=x86_64-unknown-linux-gnu")

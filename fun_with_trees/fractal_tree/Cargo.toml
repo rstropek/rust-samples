@@ -1,0 +1,18 @@
+[package]
+name = "fractal_tree"
+version = "0.1.0"
+edition = "2021"
+authors = [ "Rainer <rainer@software-architects.at>" ]
+description = "Sample for generating trees using fractals"
+
+[features]
+default = [ "svg" ]
+svg = [ "dep:handlebars", "dep:serde" ]
+
+[dependencies]
+rand = "0.8"
+rand_seeder = "0.2"
+rand_core = "0.6"
+rand_pcg = "0.3"
+handlebars = { version = "4", optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }

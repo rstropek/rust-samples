@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "fractal_tree",
+    "fractal_tree_cli",
+]

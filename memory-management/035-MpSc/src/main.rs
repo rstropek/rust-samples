@@ -3,7 +3,8 @@ use std::sync::mpsc;
 use std::thread;
 
 fn main() {
-  let (sender, receiver) = mpsc::channel::<i32>();
+  let (sender, receiver) = 
+    mpsc::channel::<i32>();
 
   thread::spawn(move || {
     for i in 0..5 {
