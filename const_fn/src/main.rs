@@ -8,7 +8,7 @@
 // A simple constant value
 const NEARLY_THE_ANSWER: i32 = 41;
 
-// A constant expression that is evaulated at compile time.
+// A constant expression that is evaluated at compile time.
 // Note: Not everything is allowed in a constant expression. See
 // https://doc.rust-lang.org/reference/const_eval.html#constant-expressions
 // for details
@@ -35,11 +35,11 @@ const CUSTOMER: Customer = Customer {
 // A constant struct.
 // Note that constants may refer to the address of other constants.
 // The lifetime defaults to 'static (elided).
-struct _NamedNumbers<'a> {
+struct NamedNumbers<'a> {
     name: &'a str,
     numbers: &'a [i32; 5],
 }
-const NAMED_NUMBERS: _NamedNumbers = _NamedNumbers {
+const NAMED_NUMBERS: NamedNumbers = NamedNumbers {
     name: TEXT,
     numbers: &NUMBERS,
 };
@@ -114,6 +114,8 @@ const fn numbers<const N: usize>() -> [i32; N] {
 
 // Slightly more complex samples for concatenation of strings in const fn.
 // Inspired by crates like https://docs.rs/const-str/latest/const_str/.
+
+/// Gets total length of all provided strings
 const fn len(strs: &[&str]) -> usize {
     let mut result = 0;
     let mut remaining = strs;
@@ -129,8 +131,10 @@ const fn len(strs: &[&str]) -> usize {
     result
 }
 
+/// Helper struct for concatenation of strings in const fn.
 struct Buf<const N: usize>([u8; N]);
 
+/// Concatenates all provided strings into a single string *at compile time*.
 const fn concat<const N: usize>(strs: &[&str]) -> Buf<N> {
     let mut buffer = [0; N];
     let mut position_in_buffer = 0;
@@ -166,11 +170,6 @@ macro_rules! my_concat {
         unsafe { core::str::from_utf8_unchecked(&CONCAT_BUF.0) }
     }}
 }
-
-// Brand new (1.63): Mutex::new and RwLock::new are const functions.
-// No need for lazy_static & friends anymore (see also
-// https://stackoverflow.com/a/27826181/3548127).
-static ARRAY: std::sync::Mutex<Vec<u8>> = std::sync::Mutex::new(vec![]);
 
 // Brand new (1.61, stable): Trait bounds on generic parameters for
 // const functions are now supported.
@@ -219,9 +218,16 @@ const fn _can_purr(_animal: &dyn Animal) -> Result<bool, &str> {
     Err("Sorry, cannot find that out")
 }
 
+// Brand new (1.63): Mutex::new and RwLock::new are const functions.
+// No need for lazy_static & friends anymore (see also
+// https://stackoverflow.com/a/27826181/3548127).
+static ARRAY: std::sync::Mutex<Vec<u8>> = std::sync::Mutex::new(vec![]);
+
 fn main() {
     // Constants are inlined at compile time wherever they are used.
     println!("The answer is {ANSWER}");
+    println!("{TEXT}");
+    println!("Numbers: {:?}", NUMBERS);
 
     // Constants can be declared in any scope, not just global.
     const VERSION: &str = "1.2.3";
@@ -249,6 +255,12 @@ fn main() {
     const TEN_NUMBERS: [i32; 10] = numbers();
     println!("{:?}", TEN_NUMBERS);
 
+    // Const functions can also be called at runtime.
+    // They are not limited to constants or static variables.
+    let five_numbers = five_numbers();
+    println!("{:?}", five_numbers);
+
+    // Define constant strings and concat them at compile time
     const STRS: &[&str] = &["Hello", " ", "World!"];
     const LEN: usize = len(STRS);
     const CONCAT_BUF: Buf<LEN> = concat(STRS);
@@ -263,16 +275,15 @@ fn main() {
 
     const CAT: &str = "😺";
     const MOUSE: &str = "🐭";
-    const GREETING2: &str = my_concat!(CAT, "💗", MOUSE);
-    //const GREETING3: &str = concat!(CAT, "💗", MOUSE);
-    println!("{}", GREETING2);
 
-    {
-        let mut arr = ARRAY.lock().unwrap();
-        for _ in 0..10 {
-            arr.push(1);
-        }
-    }
+    // Rust's built-in concat! macro only accepts literals.
+    // We cannot concat two string constants.
+    //const GREETING3: &str = concat!(CAT, "💗", MOUSE);
+
+    // Our macro makes it easy to call the concat const fns
+    // we defined before. It is not limited to literals.
+    const GREETING2: &str = my_concat!(CAT, "💗", MOUSE);
+    println!("{}", GREETING2);
 
     const CUSTOMERS: [Customer; 2] = [
         Customer {
@@ -293,6 +304,12 @@ fn main() {
     const PURRING_ANIMAL: &dyn Animal = animal_by_sound(true);
     println!("Animals that can purr say {}", PURRING_ANIMAL.make_sound());
 
+    {
+        let mut arr = ARRAY.lock().unwrap();
+        for _ in 0..10 {
+            arr.push(1);
+        }
+    }
     println!("Called push {} times", ARRAY.lock().unwrap().len());
 
     println!("Program ends now");
