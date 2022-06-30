@@ -218,10 +218,18 @@ const fn _can_purr(_animal: &dyn Animal) -> Result<bool, &str> {
     Err("Sorry, cannot find that out")
 }
 
+use std::sync::{Mutex, atomic::AtomicI32};
+
 // Brand new (1.63): Mutex::new and RwLock::new are const functions.
 // No need for lazy_static & friends anymore (see also
 // https://stackoverflow.com/a/27826181/3548127).
-static ARRAY: std::sync::Mutex<Vec<u8>> = std::sync::Mutex::new(vec![]);
+static ARRAY: Mutex<Vec<u8>> = Mutex::new(vec![]);
+
+// Speaking of static: Note that CONSTS are COPYIED everywhere they are referenced.
+// If you have a type that is mutable, always use STATIC, not CONST.
+// +-- Replace this with static
+// v
+static CONST_VALUE: AtomicI32 = AtomicI32::new(0);
 
 fn main() {
     // Constants are inlined at compile time wherever they are used.
@@ -311,6 +319,10 @@ fn main() {
         }
     }
     println!("Called push {} times", ARRAY.lock().unwrap().len());
+
+    CONST_VALUE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    CONST_VALUE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    println!("Result should be 2, it is {:?}", CONST_VALUE.load(std::sync::atomic::Ordering::Relaxed));
 
     println!("Program ends now");
 }
