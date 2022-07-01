@@ -51,6 +51,8 @@ impl<'a> Drop for WillSayGoodbye<'a> {
         println!("{}", self.0);
     }
 }
+// Note that destructor on statics will not run on program/thread exit.
+static _GOODBYE_IN_ENGLISH: WillSayGoodbye = WillSayGoodbye("Goodbye");
 const GOODBYE_IN_GERMAN: WillSayGoodbye = WillSayGoodbye("Auf Wiedersehen");
 
 // Constants in traits
@@ -229,7 +231,7 @@ static ARRAY: Mutex<Vec<u8>> = Mutex::new(vec![]);
 // If you have a type that is mutable, always use STATIC, not CONST.
 // +-- Replace this with static
 // v
-static CONST_VALUE: AtomicI32 = AtomicI32::new(0);
+const CONST_VALUE: AtomicI32 = AtomicI32::new(0);
 
 fn main() {
     // Constants are inlined at compile time wherever they are used.
@@ -249,9 +251,14 @@ fn main() {
         CUSTOMER.name, CUSTOMER.age, CUSTOMER
     );
 
+    // Note that if you modify a const item, a new temporary
+    // item is created. the original const item is not modified.
+    CUSTOMER.age += 1;
+    
     {
         let _goodbye_sayer = GOODBYE_IN_GERMAN;
-        // Will print "Auf Wiedersehen" on stdout because var goes out of scope
+        // Destructor will run at appropriate point when const is used. Therefore,
+        // this code will print "Auf Wiedersehen" on stdout when var goes out of scope.
     }
 
     println!("{:?}", IHaveNumbers::NUMBERS);
