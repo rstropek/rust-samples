@@ -16,9 +16,9 @@ bytes = "1"
 # General-purpose crate with common HTTP types.
 http = "0.2"
 # The Spin SDK.
-spin-sdk = { git = "https://github.com/fermyon/spin", tag = "canary" }
+spin-sdk = { git = "https://github.com/fermyon/spin", tag = "v0.5.0" }
 # Crate that generates Rust Wasm bindings from a WebAssembly interface.
-wit-bindgen-rust = { git = "https://github.com/bytecodealliance/wit-bindgen", rev = "e9c7c0a3405845cecd3fe06f3c20ab413302fc73" }
+wit-bindgen-rust = { git = "https://github.com/bytecodealliance/wit-bindgen", rev = "cb871cfa1ee460b51eb1d144b175b9aab9c50aba" }
 handlebars = "4.0.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.0"

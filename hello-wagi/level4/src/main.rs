@@ -58,14 +58,14 @@ fn main() {
     };
 
     // Extract JS bundle ID
-    let re = Regex::new(r#"<script src="main.(.*?).js""#).unwrap();
+    let re = Regex::new(r#"<script defer="" type="text/javascript" src="https://www.nytimes.com/games-assets/v2/wordle.(.*?).js""#).unwrap();
     let bundle_id = match re.captures(&str) {
         Some(c) => c,
         None => return_status!(500),
     };
 
     // Build URL for JavaScript and get it
-    let url = format!("https://www.nytimes.com/games/wordle/main.{}.js", &bundle_id[1]);
+    let url = format!("https://www.nytimes.com/games-assets/v2/wordle.{}.js", &bundle_id[1]);
     let str = match get(&url) {
         Ok(d) => d,
         Err(_) => return_status!(404)
@@ -81,12 +81,11 @@ fn main() {
         _ => return_status!(500),
     }
 
-    let shorter_word_array = &arrays[if arrays[0].len() > arrays[1].len() { 1 } else { 0 }];
+    let shorter_word_array = &arrays[if arrays[0].len() > arrays[1].len() { 0 } else { 1 }];
     let words = shorter_word_array[1]
         .split(',') // Split to get words
         .map(|s| &s[1..s.len() - 1]) // Remove quotes
         .collect::<Vec<&str>>();
-    
     
     // Calculate word index and get word
     let start = Utc.ymd(2021, 6, 19); // Start of Wordle
