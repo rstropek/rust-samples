@@ -15,3 +15,27 @@ Content-Type: application/json
 {
     "foo": "bar"
 }
+
+###
+GET http://localhost:3000/level4
+
+###
+POST https://www.techorama.nl/umbraco/api/schedules/get
+Accept: application/json
+Content-Type: application/json
+
+{
+  "culture": "nl-NL",
+  "eventId": "c8330994-c8bb-47f8-bc9b-c5776656470e"
+}
+
+###
+POST https://www.techorama.nl/umbraco/api/sessions/get/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "culture": "nl-NL",
+  "eventId": "c8330994-c8bb-47f8-bc9b-c5776656470e",
+  "slug": "modern-application-development-with-net-and-azure/"
+}

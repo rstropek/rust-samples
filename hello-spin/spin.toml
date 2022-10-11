@@ -31,3 +31,10 @@ TEMPLATE_PATH = "/templates"
 route = "/level3/..."
 [component.build]
 command = "cargo build --target wasm32-wasi --release"
+
+[[component]]
+id = "level4"
+source = "target/wasm32-wasi/release/level4.wasm"
+allowed_http_hosts = [ "www.techorama.nl" ]
+[component.trigger]
+route = "/level4/..."
