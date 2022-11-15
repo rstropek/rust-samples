@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 fractal_tree = { path = "../fractal_tree", default-features = false, features = ["svg"] }
-tokio = { version = "1", features = ["fs", "macros", "rt", "io-util"] }
+anyhow = "1.0"
+clap = { version = "4.0.24", features = ["derive"] }

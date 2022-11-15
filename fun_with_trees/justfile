@@ -1,14 +1,20 @@
 # General helper tasks
 build TARGET:
     cargo build {{TARGET}}
-run APP TARGET:
-    cargo run TARGET --bin APP  
+run APP TARGET TARGET_FILE DEPTH TRUNK_LENGTH:
+    cargo run {{TARGET}} --bin {{APP}} -- -t {{TARGET_FILE}} -d {{DEPTH}} -l {{TRUNK_LENGTH}}
+help APP TARGET:
+    cargo run {{TARGET}} --bin {{APP}} -- -h
 
 # Build tasks
 build-wasi: (build "--target=wasm32-wasi")
 build-linux: (build "--target=x86_64-unknown-linux-gnu")
 
 # Run tasks
-run-wasi: (build-wasi)
-    wasmtime ./target/wasm32-wasi/debug/fractal_tree_cli.wasm
-run-linux: (run "fractal_tree_cli" "--target=x86_64-unknown-linux-gnu")
+run-wasi: (run-wasi-param "tree.svg" "13" "100")
+run-wasi-param TARGET_FILE DEPTH TRUNK_LENGTH: (build-wasi)
+    wasmtime --dir=. ./target/wasm32-wasi/debug/fractal_tree_cli.wasm -- -t {{TARGET_FILE}} -d {{DEPTH}} -l {{TRUNK_LENGTH}}
+#   wasmtime --dir=. ./target/wasm32-wasi/debug/fractal_tree_cli.wasm --fuel 4750000000 -- -t {{TARGET_FILE}} -d {{DEPTH}} -l {{TRUNK_LENGTH}}
+run-linux: (run-linux-param "tree.svg" "13" "100")
+run-linux-param TARGET_FILE DEPTH TRUNK_LENGTH: (run "fractal_tree_cli" "--target=x86_64-unknown-linux-gnu" TARGET_FILE DEPTH TRUNK_LENGTH)
+help-linux: (help "fractal_tree_cli" "--target=x86_64-unknown-linux-gnu")
