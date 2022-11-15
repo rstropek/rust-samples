@@ -1,0 +1,14 @@
+spin_version = "1"
+authors = ["Rainer <rainer@software-architects.at>"]
+description = "Factal Tree with Spin"
+name = "fractal_tree_spin"
+trigger = { type = "http", base = "/" }
+version = "0.1.0"
+
+[[component]]
+id = "fractal-tree-spin"
+source = "../target/wasm32-wasi/release/fractal_tree_spin.wasm"
+[component.trigger]
+route = "/..."
+[component.build]
+command = "cargo build --target wasm32-wasi --release"

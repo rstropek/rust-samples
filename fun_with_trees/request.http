@@ -1,0 +1,7 @@
+GET http://localhost:3000
+
+###
+GET http://127.0.0.1:3000/?seed=Hello%20WASM&depth=10&trunk=150
+
+###
+GET http://20.238.176.25

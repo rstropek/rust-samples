@@ -1,0 +1,6 @@
+kubectl get nodes -o wide
+kubectl describe node aks-mywasipool-41740949-vmss000000
+kubectl describe node aks-mywasipool-41740949-vmss000000 | grep spin
+
+cd AKS/spin-workload
+kubectl apply -f spin.yaml
