@@ -1,0 +1,10 @@
+GET http://localhost:8080/heroes/
+
+###
+GET http://localhost:8080/heroes/?name=Won
+
+###
+GET http://localhost:8080/heroes/?name=Won%
+
+###
+GET http://localhost:8080/heroes/?name=Spider
