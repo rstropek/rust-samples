@@ -1,0 +1,21 @@
+#@host = https://word-puzzle.rainer.workers.dev
+@host = http://localhost:8787
+
+###
+POST {{host}}/generate
+
+{
+	"size": 12,
+	"words": [
+		"SERVERLESS",
+		"COMPUTING",
+		"SOFTWARE",
+		"DEVOPS",
+		"CLOUD",
+		"SNAKE",
+		"SCHOOL",
+		"BANANA",
+		"HOUSE",
+		"SNOWFLAKE"
+	]
+}

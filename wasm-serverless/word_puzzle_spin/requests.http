@@ -1,0 +1,26 @@
+@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
+#@host = http://localhost:3000
+
+###
+GET {{host}}/
+
+###
+POST {{host}}/generate
+
+{
+	"size": 12,
+	"words": [
+		"SERVERLESS",
+		"COMPUTING",
+		"SOFTWARE",
+		"DEVOPS",
+		"CLOUD",
+		"SNAKE",
+		"SCHOOL",
+		"BANANA",
+		"HOUSE",
+		"SNOWFLAKE",
+		"LISSI",
+		"HOLLY"
+	]
+}
