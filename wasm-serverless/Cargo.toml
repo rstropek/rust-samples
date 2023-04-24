@@ -2,5 +2,4 @@
 members = [
     "word_puzzle_cloudflare",
     "word_puzzle_generator",
-		"word_puzzle_spin",
 ]

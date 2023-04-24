@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 rand = "0.8"
 getrandom = { version = "0.2", features = ["js"] }
+serde = { version = "1", features = ["derive"] }

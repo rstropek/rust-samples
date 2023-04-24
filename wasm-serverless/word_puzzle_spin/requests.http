@@ -1,5 +1,5 @@
-@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
-#@host = http://localhost:3000
+#@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
+@host = http://localhost:3000
 
 ###
 GET {{host}}/

@@ -1,26 +1,34 @@
+use std::collections::HashSet;
+
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 // Naive word puzzle generator
 
-pub fn place_words(words: &[String], size: usize) -> Result<Vec<Vec<char>>, Vec<String>> {
+#[derive(Deserialize)]
+pub struct GeneratorOptions {
+    pub size: usize,
+    pub words: Vec<String>,
+}
+
+#[derive(Serialize)]
+pub struct Puzzle {
+    pub grid: Vec<String>,
+    pub words: Vec<String>,
+}
+
+pub fn place_words(mut options: GeneratorOptions) -> Puzzle {
     let mut rng = rand::thread_rng();
 
-    // Make sure that all words are shorter than the size of the grid
-    if words.iter().any(|word| word.len() > size) {
-        return Err(words
-            .iter()
-            .filter(|word| word.len() > size)
-            .map(|word| word.to_string())
-            .collect());
-    }
-
     // Create empty grid
-    let mut grid = vec![vec!['.'; size]; size];
+    let mut grid = vec![vec!['.'; options.size]; options.size];
 
     // Remember unplaced words
-    let mut unplaced_words = Vec::new();
+    let mut unplaced_words = HashSet::new();
 
-    for word in words {
+    // Sort words by length, process longest first
+    options.words.sort_by_key(|w| w.len());
+    for word in options.words.iter().rev() {
         let mut placed = false;
 
         // In this naive implementation, we try to place a word 100 times before giving up.
@@ -39,15 +47,22 @@ pub fn place_words(words: &[String], size: usize) -> Result<Vec<Vec<char>>, Vec<
 
         // If we couldn't place a word, remember it
         if !placed {
-            unplaced_words.push(word.to_string());
+            unplaced_words.insert(word);
         }
     }
 
-    if unplaced_words.is_empty() {
-        fill_remaining_spots(&mut grid);
-        Ok(grid)
-    } else {
-        Err(unplaced_words)
+    fill_remaining_spots(&mut grid);
+    Puzzle {
+        grid: grid
+            .iter()
+            .map(|row| row.iter().collect::<String>())
+            .collect(),
+        words: options
+            .words
+            .iter()
+            .filter(|w| !unplaced_words.contains(w))
+            .cloned()
+            .collect(),
     }
 }
 

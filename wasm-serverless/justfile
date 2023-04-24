@@ -1,0 +1,5 @@
+cfdev:
+	cd word_puzzle_cloudflare; npm run dev
+
+spin:
+	cd word_puzzle_spin; spin build; spin up

@@ -1,42 +1,40 @@
 use anyhow::Result;
+use routefinder::Captures;
 use spin_sdk::{
     http::{Request, Response, Router},
     http_component,
 };
-use serde::Deserialize;
-use word_puzzle_generator::place_words;
+use word_puzzle_generator::{place_words, GeneratorOptions};
 
-#[derive(Deserialize)]
-struct GeneratorOptions {
-    size: usize,
-    words: Vec<String>,
-}
-
-/// A simple Spin HTTP component.
 #[http_component]
 fn handle_word_puzzle_spin(req: Request) -> Result<Response> {
-	let mut router = Router::new();
+    let mut router = Router::new();
 
-	router.get("/", |_req, _params| Ok(http::Response::builder()
-		.status(http::StatusCode::OK)
-		.body(Some("Hello from spin!".into()))?));
-	router.post("/generate", |req, _params| {
-		let body = req.body().as_ref().unwrap();
-    let options: GeneratorOptions = serde_json::from_str(std::str::from_utf8(body.as_ref()).unwrap()).unwrap();
+    router.get("/", |_req, _params| {
+        Ok(http::Response::builder()
+            .status(http::StatusCode::OK)
+            .body(Some("Hello from spin!".into()))?)
+    });
 
-		if options.size > 20 {
-			return Ok(http::Response::builder().status(http::StatusCode::BAD_REQUEST).body(None)?);
-		}
+    router.post("/generate", generate_puzzle);
 
-		let grid = place_words(&options.words, options.size).unwrap();
-		let response = serde_json::to_string_pretty(&grid
-					.iter()
-					.map(|row| row.iter().collect::<String>())
-					.collect::<Vec<String>>())?.as_bytes().to_vec();
-		return Ok(http::Response::builder()
-			.status(http::StatusCode::OK)
-			.body(Some(response.into()))?)
-	});
+    router.handle(req)
+}
 
-	router.handle(req)
+fn generate_puzzle(req: Request, _params: Captures) -> Result<Response> {
+    let body = req.body().as_ref().unwrap();
+    let options: GeneratorOptions = serde_json::from_str(std::str::from_utf8(body.as_ref())?)?;
+
+    if options.size > 20 {
+        return Ok(http::Response::builder()
+            .status(http::StatusCode::BAD_REQUEST)
+            .body(None)?);
+    }
+
+    let puzzle = place_words(options);
+    let response = serde_json::to_string_pretty(&puzzle)?.as_bytes().to_vec();
+    Ok(http::Response::builder()
+        .status(http::StatusCode::OK)
+        .header("Content-Type", "application/json")
+        .body(Some(response.into()))?)
 }
