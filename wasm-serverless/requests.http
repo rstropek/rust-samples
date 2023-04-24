@@ -1,5 +1,10 @@
+### Cloudflare
+@host = https://word-puzzle.rainer.workers.dev
+#@host = http://localhost:8787
+
+### Spin
 #@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
-@host = http://localhost:3000
+#@host = http://localhost:3000
 
 ###
 GET {{host}}/
@@ -19,8 +24,10 @@ POST {{host}}/generate
 		"SCHOOL",
 		"BANANA",
 		"HOUSE",
-		"SNOWFLAKE",
-		"LISSI",
-		"HOLLY"
+		"SNOWFLAKE"
 	]
 }
+
+###
+OPTIONS {{host}}/generate
+

@@ -26,7 +26,12 @@ async fn generate_puzzle(mut req: Request, _ctx: RouteContext<()>) -> Result<Res
             }
 
             let puzzle = place_words(options);
-            Response::from_json(&puzzle)
+            Response::from_json(&puzzle)?.with_cors(
+                &Cors::new()
+                    .with_origins(vec!["*"])
+                    .with_allowed_headers(vec!["*"])
+                    .with_methods(vec![Method::Post]),
+            )
         }
     }
 }

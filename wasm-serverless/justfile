@@ -3,3 +3,9 @@ cfdev:
 
 spin:
 	cd word_puzzle_spin; spin build; spin up
+
+cf-deploy:
+	cd word_puzzle_cloudflare; npm run deploy
+
+spin-deploy:
+	cd word_puzzle_spin; spin build; spin deploy
