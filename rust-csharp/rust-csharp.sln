@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp-client", "csharp-client\csharp-client.csproj", "{C8221DA7-39F9-400C-B78C-511E6AADD91D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp-library", "csharp-library\csharp-library.csproj", "{46195AAA-B891-4A9F-8222-B0E8FB329635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp-wasm-host", "csharp-wasm-host\csharp-wasm-host.csproj", "{C562167B-F088-4A02-BA61-C9A46E07DF45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8221DA7-39F9-400C-B78C-511E6AADD91D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8221DA7-39F9-400C-B78C-511E6AADD91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8221DA7-39F9-400C-B78C-511E6AADD91D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8221DA7-39F9-400C-B78C-511E6AADD91D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46195AAA-B891-4A9F-8222-B0E8FB329635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46195AAA-B891-4A9F-8222-B0E8FB329635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46195AAA-B891-4A9F-8222-B0E8FB329635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46195AAA-B891-4A9F-8222-B0E8FB329635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C562167B-F088-4A02-BA61-C9A46E07DF45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C562167B-F088-4A02-BA61-C9A46E07DF45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C562167B-F088-4A02-BA61-C9A46E07DF45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C562167B-F088-4A02-BA61-C9A46E07DF45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

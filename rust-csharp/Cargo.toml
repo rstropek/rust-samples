@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "rust-library",
+    "rust-client",
+    "rust-wasm-module",
+]

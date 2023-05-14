@@ -1,0 +1,21 @@
+build:
+    cargo build
+    dotnet build
+    cp target/debug/librust_library.so csharp-client/bin/Debug/net7.0
+
+build-aot:
+    cargo build
+    cd csharp-library && dotnet publish -r linux-x64 -c Release -o ./out
+
+run: (build)
+    dotnet run --project csharp-client
+
+run-aot: (build-aot)
+    cargo run --bin rust-client
+
+build-wasm:
+    cd rust-wasm-module && wasm-pack build
+    dotnet build
+
+run-wasm: (build-wasm)
+    dotnet run --project csharp-wasm-host

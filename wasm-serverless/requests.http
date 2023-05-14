@@ -1,9 +1,9 @@
 ### Cloudflare
-@host = https://word-puzzle.rainer.workers.dev
+#@host = https://word-puzzle.rainer.workers.dev
 #@host = http://localhost:8787
 
 ### Spin
-#@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
+@host = https://word-puzzle-spin-zirmufxv.fermyon.app/
 #@host = http://localhost:3000
 
 ###
