@@ -1,0 +1,8 @@
+run:
+    rustc main.rs && ./main
+
+run-veganarian:
+    rustc --cfg vegetarian --cfg vegan main.rs && ./main
+
+run-vegan:
+    rustc --cfg vegan main.rs && ./main
