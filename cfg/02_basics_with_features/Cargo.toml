@@ -1,0 +1,13 @@
+[package]
+name = "salad_maker_with_features"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+traditional = []
+vegetarian = []
+vegan = []
+all = ["traditional", "vegetarian", "vegan"]
+
+[dependencies]

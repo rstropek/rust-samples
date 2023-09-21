@@ -1,0 +1,13 @@
+[package]
+name = "recipe_reader_client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Try switching from featurese = "yaml" to features = "json". This will
+# result in a compilation error because we use the yaml feature of the crate.
+# However, you will see that Rust 1.72 became smarter and will tell you that
+# that the missing module yaml is gated behind the "yaml" feature. Previous
+# versions of Rust would have just told you that the module yaml is missing.
+#recipe_reader = { path = "../04_recipe_reader", features = ["json"] }
+recipe_reader = { path = "../04_recipe_reader", features = ["yaml"] }

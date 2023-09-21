@@ -20,7 +20,7 @@ pub trait RecipeReader {
 }
 
 #[cfg(feature = "json")]
-mod json
+pub mod json
 {
     use super::*;
 
@@ -36,7 +36,7 @@ mod json
 }
 
 #[cfg(feature = "yaml")]
-mod yaml
+pub mod yaml
 {
     use super::*;
     
