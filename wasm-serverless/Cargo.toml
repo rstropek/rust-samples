@@ -1,5 +1,13 @@
 [workspace]
+resolver = "2"
 members = [
     "word_puzzle_cloudflare",
     "word_puzzle_generator",
 ]
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1
