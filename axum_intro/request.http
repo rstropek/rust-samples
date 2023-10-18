@@ -41,3 +41,15 @@ GET {{host}}/lookup/8
 
 ###
 GET {{host}}/random
+
+###
+GET {{host}}/numbers
+
+###
+POST {{host}}/numbers
+Content-Type: application/json
+
+1
+
+###
+GET {{host}}/poem
