@@ -1,0 +1,2 @@
+asm METHOD:
+    cargo asm stack::{{METHOD}}
