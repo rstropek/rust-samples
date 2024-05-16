@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'telnet_sokoban'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=telnet_sokoban",
+                    "--package=telnet_sokoban"
+                ],
+                "env": {
+                    "OPENAI_API_KEY": "sk-..."
+                },
+                "filter": {
+                    "name": "telnet_sokoban",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'telnet_sokoban'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=telnet_sokoban",
+                    "--package=telnet_sokoban"
+                ],
+                "filter": {
+                    "name": "telnet_sokoban",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+[package]
+name = "telnet_sokoban"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+async-openai = "0"
+anyhow = "1"
