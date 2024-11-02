@@ -13,47 +13,111 @@ fn main() -> ! {
     rtt_init_print!();
     rprintln!("Hello world!");
 
-    // The LED matrix is organized into rows (ROW1 to ROW5) and columns (COL1 to COL5). Each row and column represents
-    // connections to LEDs in a grid formation, where each intersection can turn on or off an LED by controlling the flow of current.
-    // In a 5x5 matrix like this, there are 25 LEDs, arranged in rows and columns. Each LED is placed at an intersection of a row and a column.
-    // By setting a row to a high (positive) voltage and a column to low (grounded), current can flow through the corresponding LED 
-    // in that row and column, causing it to light up.
-    // (see also Microbit Schematic at https://tech.microbit.org/hardware/schematic/, page 2
+    const ROW_PINS: [(u8, u32); 5] = [(0, 21), (0, 22), (0, 15), (0, 24), (0, 19)];
+    const COL_PINS: [(u8, u32); 5] = [(0, 28), (0, 11), (0, 31), (1, 5), (0, 30)];
 
-    // In our example, we will use ROW1 and COL1 to turn on an LED. From the schematics (page 3), we can see that 
-    // ROW1 is connected to Port 0/Pin 21 and COL1 is connected to Port 0/Pin 28.
+    const GPIO0_BASE_ADDR: u32 = 0x5000_0000;
+    const GPIO1_BASE_ADDR: u32 = 0x5000_0300;
 
-    // Configuration of GPIO happens in the PIN_CNF registers. The data sheet for nRF52833
-    // (https://docs-be.nordicsemi.com/bundle/ps_nrf52833/attach/nRF52833_PS_v1.7.pdf?_LANG=enus) tells us that the
-    // base address for PIN_CNF registers is 0x5000_0000 (page 231). The offset for GPIO21 is 0x754 and for GPIO28 it is 0x770
-    // (page 232). We control the value of the pins using the OUT register. To set pin 21 high, we need to 
-    // write 1 to bit 21 of the OUT register (page 232). The offset for the OUT register is 0x504 (page 231).
+    const CONFIG_REG_OFFSET: u32 = 0x700;
+    const REGISTER_LENGTH: u32 = 0x4;
+    const OUT_SET_REG_OFFSET: u32 = 0x508;
+    const OUT_CLR_REG_OFFSET: u32 = 0x50C;
 
-    const GPIO0_PINCNF21_ROW1_ADDR: *mut u32 = 0x5000_0754 as *mut u32;
-    const GPIO0_PINCNF28_COL1_ADDR: *mut u32 = 0x5000_0770 as *mut u32;
+    const fn pin_config_address(port: u8, pin: u32) -> *mut u32 {
+        return (if port == 0 { GPIO0_BASE_ADDR } else { GPIO1_BASE_ADDR } + CONFIG_REG_OFFSET + (pin * REGISTER_LENGTH)) as *mut u32;
+    }
+
+    const fn out_set_address(port: u8) -> *mut u32 {
+        return (if port == 0 { GPIO0_BASE_ADDR } else { GPIO1_BASE_ADDR } + OUT_SET_REG_OFFSET) as *mut u32;
+    }
+
+    const fn out_clr_address(port: u8) -> *mut u32 {
+        return (if port == 0 { GPIO0_BASE_ADDR } else { GPIO1_BASE_ADDR } + OUT_CLR_REG_OFFSET) as *mut u32;
+    }
+
     const DIR_OUTPUT_POS: u32 = 0; // Bit in configuration register to choose between input and output (page 269)
     const PINCNF_DRIVE_LED: u32 = 1 << DIR_OUTPUT_POS; // 1 means output, 0 means input (page 269) -> we need 1
 
-    // Configure the direction of the pins to output
+    // Configure the direction of the row and col pins to output
     unsafe {
-        // Set the direction of the pins 21 and 28 to output
-        write_volatile(GPIO0_PINCNF21_ROW1_ADDR, PINCNF_DRIVE_LED);
-        write_volatile(GPIO0_PINCNF28_COL1_ADDR, PINCNF_DRIVE_LED);
-    }
-
-    const GPIO0_OUT_ADDR: *mut u32 = 0x5000_0504 as *mut u32;
-    const GPIO0_OUT_ROW1_POS: u32 = 21; // Bit in the OUT register to control GPIO21
-    let mut is_on = false;
-    loop {
-        rprintln!("Echo...");
-        unsafe {
-            // Set the value of the OUT register to turn on or off the LED
-            // We do not set the value for GPIO28 because we want it to be off
-            write_volatile(GPIO0_OUT_ADDR, (is_on as u32) << GPIO0_OUT_ROW1_POS);
+        for (port, pin) in ROW_PINS {
+            let addr = pin_config_address(port, pin);
+            write_volatile(addr, PINCNF_DRIVE_LED);
         }
 
-        for _ in 0..100_000 {
-            nop();
+        for (port, pin) in COL_PINS {
+            let addr = pin_config_address(port, pin);
+            write_volatile(addr, PINCNF_DRIVE_LED);
+        }
+    }
+
+    unsafe {
+        // Initialize: rows LOW (off) and columns HIGH (off)
+        for (port, pin) in ROW_PINS {
+            write_volatile(out_clr_address(port), 1 << pin);  // Keep rows LOW initially
+        }
+
+        for (port, pin) in COL_PINS {
+            write_volatile(out_set_address(port), 1 << pin);  // Keep columns HIGH initially
+        }
+    }
+
+    const DISPLAY: [[bool; 5]; 5] = [
+        [true, false, false, false, true],
+        [false, true, false, true, false],
+        [false, false, true, false, false],
+        [false, true, false, true, false],
+        [true, false, false, false, true],
+    ];
+
+    let mut is_on = false;
+    loop {
+        unsafe {
+            if is_on {
+                for _ in 0..500 {
+                    for (row_idx, row) in DISPLAY.into_iter().enumerate() {
+                        // Set current row to HIGH (active)
+                        write_volatile(out_set_address(ROW_PINS[row_idx].0), 1 << ROW_PINS[row_idx].1);
+                        
+                        for (col_idx, visible) in row.into_iter().enumerate() {
+                            if visible {
+                                // For visible pixels, set column to LOW
+                                write_volatile(out_clr_address(COL_PINS[col_idx].0), 1 << COL_PINS[col_idx].1);
+                            } else {
+                                // For invisible pixels, keep column HIGH
+                                write_volatile(out_set_address(COL_PINS[col_idx].0), 1 << COL_PINS[col_idx].1);
+                            }
+                        }
+                        
+                        for _ in 0..100 {
+                            nop();
+                        }
+                        
+                        // Reset columns to HIGH before moving to next row
+                        for (port, pin) in COL_PINS {
+                            write_volatile(out_set_address(port), 1 << pin);
+                        }
+                        
+                        // Set current row back to LOW
+                        write_volatile(out_clr_address(ROW_PINS[row_idx].0), 1 << ROW_PINS[row_idx].1);
+                    }
+                }
+
+            } else {
+                // Turn off all LEDs by setting all rows LOW and all columns HIGH
+                for (port, pin) in ROW_PINS {
+                    write_volatile(out_clr_address(port), 1 << pin);
+                }
+                for (port, pin) in COL_PINS {
+                    write_volatile(out_set_address(port), 1 << pin);
+                }
+                
+                // Add delay for the off state
+                for _ in 0..300000 {
+                    nop();
+                }
+            }
         }
 
         is_on = !is_on;
