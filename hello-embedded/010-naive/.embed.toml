@@ -1,0 +1,9 @@
+# Find the correct chip name using: `probe-rs chip list | grep nRF52833`
+# We enable RTT (Real Time Transfer) to do println! debugging.
+# GDB could also be used, but not in this demo.
+
+[default.general]
+chip = "nRF52833_xxAA"
+
+[default.rtt]
+enabled = true

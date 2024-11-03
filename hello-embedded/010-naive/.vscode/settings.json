@@ -1,0 +1,6 @@
+/* Make sure that Rust Analyzer only checks for the target we're building for. */
+{
+    "rust-analyzer.check.targets": "thumbv7em-none-eabihf",
+    "rust-analyzer.cargo.allTargets": false,
+    "rust-analyzer.check.allTargets": false
+}

@@ -1,0 +1,17 @@
+# Microbit v2 uses a Nordic nRF52833 Processor, core variant: Arm Cortex-M4 32bit with FPU
+# (see https://tech.microbit.org/hardware/#nrf52-application-processor).
+# The Arm Cortex-M4 implements the Thumb instruction set.
+# At https://doc.rust-lang.org/nightly/rustc/platform-support.html, we can lookup
+# the target name by looking for "thumbv7".
+#
+# Note: You must install the target using `rustup target add thumbv7em-none-eabihf`.
+#       If you unsure whether you have it installed, you can check with `rustup show`.
+
+[build]
+target = "thumbv7em-none-eabihf"
+
+# Tell the linker to use the memory.x linker script.
+[target.thumbv7em-none-eabihf]
+rustflags = [
+  "-C", "link-arg=-Tlink.x"
+]
