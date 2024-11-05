@@ -1,5 +1,7 @@
 # Storyboard
 
+[Microbit Stand with Rust Logo](https://cad.onshape.com/documents/7fbd0c20fb025ee9c6ae2802/w/9127ddc229189599d7cc237a/e/2f73d09687bc07460344c39f)
+
 ## Preparation
 
 Make sure to install [probe-rs](https://probe.rs/docs/getting-started/installation/).
