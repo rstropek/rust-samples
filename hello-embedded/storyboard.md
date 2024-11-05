@@ -22,6 +22,8 @@ Create a new project:
 cargo new playground
 ```
 
+Copy _snip.code-snippets_ to _.vscode/_ to get snippets for this demo.
+
 Create _.cargo/config.toml_:
 
 ```
@@ -66,7 +68,7 @@ MEMORY
 }
 ```
 
-Find the correct chip name for `cargo embed`: 
+Find the correct chip name for `cargo embed` with `probe-rs`: 
 
 ```
 probe-rs chip list | grep nRF52833
@@ -103,6 +105,7 @@ Write and discuss the code:
 ```rs
 #![no_std]
 #![no_main]
+#![allow(unused)]
 
 use cortex_m::asm::nop;
 use cortex_m_rt::entry;
@@ -137,9 +140,9 @@ cargo embed
 ```rs
 #![no_std]
 #![no_main]
+#![allow(unused)]
 
 use core::ptr::write_volatile;
-
 use cortex_m::asm::nop;
 use cortex_m_rt::entry;
 use panic_halt as _;
@@ -157,10 +160,33 @@ const DIR_OUTPUT_VALUE: u32 = 1 << DIR_OUTPUT_POS; // 1 means output
 const OUT_SET_REG_OFFSET: u32 = 0x508;
 const OUT_CLR_REG_OFFSET: u32 = 0x50C;
 
+fn get_base_addr(port: u8) -> u32 {
+    match port {
+        0 => GPIO_PORT0_BASE_ADDR,
+        1 => GPIO_PORT1_BASE_ADDR,
+        _ => unreachable!(),
+    }
+}
+
+unsafe fn as_output(port: u8, pin: u32) {
+    let mut addr = get_base_addr(port);
+    addr += CONFIG_REG_OFFSET + (pin * REGISTER_LENGTH);
+    write_volatile(addr as *mut u32, DIR_OUTPUT_VALUE);
+}
+
 // Find the pin connections for the Microbit in the schematics
 // (https://tech.microbit.org/hardware/schematic/#schematics--bom).
 const ROW_PINS: [(u8, u32); 5] = [(0, 21), (0, 22), (0, 15), (0, 24), (0, 19)];
 const COL_PINS: [(u8, u32); 5] = [(0, 28), (0, 11), (0, 31), (1, 5), (0, 30)];
+
+unsafe fn set_pin(port: u8, pin: u32, high: bool) {
+    let mut addr = get_base_addr(port);
+    addr += match high {
+        true => OUT_SET_REG_OFFSET,
+        false => OUT_CLR_REG_OFFSET,
+    };
+    write_volatile(addr as *mut u32, 1 << pin);
+}
 
 const DISPLAY_CONTENT: [[bool; 5]; 5] = [
     [true, true, false, true, true],
@@ -212,29 +238,6 @@ fn main() -> ! {
         current_row = (current_row + 1) % DISPLAY_CONTENT.len();
     }
 }
-
-fn get_base_addr(port: u8) -> u32 {
-    match port {
-        0 => GPIO_PORT0_BASE_ADDR,
-        1 => GPIO_PORT1_BASE_ADDR,
-        _ => unreachable!(),
-    }
-}
-
-unsafe fn set_pin(port: u8, pin: u32, high: bool) {
-    let mut addr = get_base_addr(port);
-    addr += match high {
-        true => OUT_SET_REG_OFFSET,
-        false => OUT_CLR_REG_OFFSET,
-    };
-    write_volatile(addr as *mut u32, 1 << pin);
-}
-
-unsafe fn as_output(port: u8, pin: u32) {
-    let mut addr = get_base_addr(port);
-    addr += CONFIG_REG_OFFSET + (pin * REGISTER_LENGTH);
-    write_volatile(addr as *mut u32, DIR_OUTPUT_VALUE);
-}
 ```
 
 Run the code.
@@ -250,6 +253,8 @@ cargo add nrf52833-pac
 ```
 
 Make the code safe:
+* Delete all addresses
+* Delete all unsafe helper functions
 
 ```rs
 #![no_std]
@@ -268,43 +273,6 @@ const DISPLAY_CONTENT: [[bool; 5]; 5] = [
     [true, false, false, false, true],
     [false, true, true, true, false],
 ];
-
-#[entry]
-fn main() -> ! {
-    // Here we use RTT. In practice, consider dfmt.
-    // (see https://defmt.ferrous-systems.com/introduction)
-    rtt_init_print!();
-
-    rprintln!("Configuring display pins as outputs");
-    let p = Peripherals::take().unwrap();
-    as_outputs(&p);
-
-    rprintln!("Displaying content");
-    let mut current_row = 0usize;
-    loop {
-        // Set current row to HIGH
-        set_row(&p, current_row, true);
-        
-        // Set columns to the appropriate values
-        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
-            set_col(&p, ix, !DISPLAY_CONTENT[current_row][ix]);
-        });
-        
-        // Wait for a bit (busy wait)
-        for _ in 0..1000 {
-            nop();
-        }
-        
-        // Reset columns to HIGH and current row to LOW before moving to next row
-        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
-            set_col(&p, ix, true);
-        });
-        set_row(&p, current_row, false);
-
-        rprintln!("Next row");
-        current_row = (current_row + 1) % DISPLAY_CONTENT.len();
-    }
-}
 
 // Find the pin connections for the Microbit in the schematics
 // (https://tech.microbit.org/hardware/schematic/#schematics--bom).
@@ -353,6 +321,42 @@ fn as_outputs(p: &Peripherals) {
     p.P1.pin_cnf[5].write(|w| w.dir().output());
     p.P0.pin_cnf[30].write(|w| w.dir().output());
 }
+
+#[entry]
+fn main() -> ! {
+    // Here we use RTT. In practice, consider dfmt.
+    // (see https://defmt.ferrous-systems.com/introduction)
+    rtt_init_print!();
+
+    rprintln!("Configuring display pins as outputs");
+    let p = Peripherals::take().unwrap();
+    as_outputs(&p);
+
+    rprintln!("Displaying content");
+    let mut current_row = 0usize;
+    loop {
+        // Set current row to HIGH
+        set_row(&p, current_row, true);
+        
+        // Set columns to the appropriate values
+        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
+            set_col(&p, ix, !DISPLAY_CONTENT[current_row][ix]);
+        });
+        
+        // Wait for a bit (busy wait)
+        for _ in 0..1000 {
+            nop();
+        }
+        
+        // Reset columns to HIGH and current row to LOW before moving to next row
+        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
+            set_col(&p, ix, true);
+        });
+        set_row(&p, current_row, false);
+
+        current_row = (current_row + 1) % DISPLAY_CONTENT.len();
+    }
+}
 ```
 
 Run the code.
@@ -388,7 +392,7 @@ Create launch settings for _probe-rs_ (_.vscode/launch.json_):
   "version": "0.2.0",
   "configurations": [
     {
-      "preLaunchTask": "${defaultBuildTask}",
+      "preLaunchTask": "rust: cargo build",
       "type": "probe-rs-debug",
       "request": "launch",
       "name": "probe_rs Executable Test",
@@ -425,10 +429,10 @@ Set a breakpoint and debug the code using _F5_.
 
 ## Use HAL
 
-Add _Hardware Abstraction Layer_ (HAL) for nRF52833:
+Add _Hardware Abstraction Layer_ (HAL) for nRF52833 and _heapless_ crate for compile-time fixed-size collections:
 
 ```
-cargo add nrf52833-hal embedded-hal
+cargo add nrf52833-hal embedded-hal heapless
 ```
 
 Learn how to work with the HAL based on [examples](https://github.com/nrf-rs/nrf-hal/tree/master/examples).
@@ -443,6 +447,7 @@ use cortex_m::asm::nop;
 use cortex_m_rt::entry;
 use embedded_hal::digital::OutputPin;
 use embedded_hal::digital::PinState;
+use heapless::String;
 use nrf52833_hal::{self as hal, gpio::Level};
 use panic_halt as _;
 use rtt_target::{rprintln, rtt_init_print};
@@ -454,51 +459,6 @@ const DISPLAY_CONTENT: [[bool; 5]; 5] = [
     [true, false, false, false, true],
     [false, true, true, true, false],
 ];
-
-#[entry]
-fn main() -> ! {
-    // Here we use RTT. In practice, consider dfmt.
-    // (see https://defmt.ferrous-systems.com/introduction)
-    rtt_init_print!();
-
-    rprintln!("Configuring display pins as outputs");
-    let p = hal::pac::Peripherals::take().unwrap();
-    let port0 = hal::gpio::p0::Parts::new(p.P0);
-    let port1 = hal::gpio::p1::Parts::new(p.P1);
-    let (mut row_pins, mut col_pins) = as_outputs(port0, port1);
-
-    rprintln!("Displaying content");
-    let mut current_row = 0usize;
-    loop {
-        // Set current row to HIGH
-        row_pins[current_row].set_high().unwrap();
-
-        // Set columns to the appropriate values
-        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
-            col_pins[ix]
-                .set_state(if DISPLAY_CONTENT[current_row][ix] {
-                    PinState::Low
-                } else {
-                    PinState::High
-                })
-                .unwrap();
-        });
-
-        // Wait for a bit (busy wait)
-        for _ in 0..1000 {
-            nop();
-        }
-
-        // Reset columns to HIGH and current row to LOW before moving to next row
-        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
-            col_pins[ix].set_high().unwrap();
-        });
-        row_pins[current_row].set_low().unwrap();
-
-        rprintln!("Next row");
-        current_row = (current_row + 1) % DISPLAY_CONTENT.len();
-    }
-}
 
 fn as_outputs(
     p0: hal::gpio::p0::Parts,
@@ -523,6 +483,57 @@ fn as_outputs(
         ],
     )
 }
+
+#[entry]
+fn main() -> ! {
+    // Here we use RTT. In practice, consider dfmt.
+    // (see https://defmt.ferrous-systems.com/introduction)
+    rtt_init_print!();
+
+    rprintln!("Configuring display pins as outputs");
+    let p = hal::pac::Peripherals::take().unwrap();
+    let port0 = hal::gpio::p0::Parts::new(p.P0);
+    let port1 = hal::gpio::p1::Parts::new(p.P1);
+    let (mut row_pins, mut col_pins) = as_outputs(port0, port1);
+
+    rprintln!("Displaying content");
+    let mut current_row = 0usize;
+    let mut refresh_counter = 0;
+    loop {
+        // Set current row to HIGH
+        row_pins[current_row].set_high().unwrap();
+
+        // Set columns to the appropriate values
+        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
+            col_pins[ix]
+                .set_state(if DISPLAY_CONTENT[current_row][ix] {
+                    PinState::Low
+                } else {
+                    PinState::High
+                })
+                .unwrap();
+        });
+        refresh_counter += 1;
+        if refresh_counter % 100 == 0 {
+            let mut message: String<100> = String::new();
+            core::fmt::write(&mut message, format_args!("Refreshed display {} times", refresh_counter)).unwrap();
+            rprintln!("{}", message);
+        }
+
+        // Wait for a bit (busy wait)
+        for _ in 0..1000 {
+            nop();
+        }
+
+        // Reset columns to HIGH and current row to LOW before moving to next row
+        (0..DISPLAY_CONTENT[current_row].len()).for_each(|ix| {
+            col_pins[ix].set_high().unwrap();
+        });
+        row_pins[current_row].set_low().unwrap();
+
+        current_row = (current_row + 1) % DISPLAY_CONTENT.len();
+    }
+}
 ```
 
 Run the code normally and with release build:
@@ -542,13 +553,14 @@ Add interrupt logic instead of busy waiting:
 
 use core::cell::RefCell;
 use core::sync::atomic::AtomicBool;
+use core::sync::atomic::AtomicUsize;
 use core::sync::atomic::Ordering;
-
 use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 use embedded_hal::digital::OutputPin;
 use embedded_hal::digital::PinState;
 use hal::pac::interrupt;
+use heapless::String;
 use nrf52833_hal::rtc::RtcCompareReg;
 use nrf52833_hal::rtc::RtcInterrupt;
 use nrf52833_hal::Rtc;
@@ -637,7 +649,6 @@ fn main() -> ! {
         });
         row_pins[current_row].set_low().unwrap();
 
-        rprintln!("Next row");
         current_row = (current_row + 1) % DISPLAY_CONTENT.len();
     }
 }
@@ -692,3 +703,4 @@ Run the code.
   * [_Embassy_](https://embassy.dev/)
   * [_RTIC_](https://rtic.rs/2/book/en/)
   * More inspiration at [Awesome Embedded Rust](https://github.com/rust-embedded/awesome-embedded-rust)
+* Excellent YouTube channel for embedded Rust (good foundational knowledge about Rust required): [The Rusty Bits](https://www.youtube.com/@therustybits)
