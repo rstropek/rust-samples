@@ -1,0 +1,10 @@
+[package]
+name = "why-i-love-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.93"
+rust_decimal = "1.36.0"
+rust_decimal_macros = "1.36.0"
+thiserror = "2.0.3"
