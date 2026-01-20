@@ -67,7 +67,7 @@ impl<T> LinkedList<T> {
         *current = Some(new_node);
     }
 
-    fn iter(&self) -> LinkedListRefIterator<T> {
+    fn iter(&self) -> LinkedListRefIterator<'_, T> {
         LinkedListRefIterator {
             current: self.head.as_deref(),
         }

@@ -16,7 +16,7 @@ impl Iterator for Fibonacci {
     fn next(&mut self) -> Option<Self::Item> {
         let old_curr = self.curr;
         self.curr = self.next;
-        self.next = old_curr + self.next;
+        self.next += old_curr;
         Some(old_curr)
     }
 }
