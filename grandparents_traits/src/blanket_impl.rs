@@ -1,3 +1,5 @@
+//! Blanket implementations let one trait implementation cover every matching type.
+
 pub trait Billable {
     fn total(&self) -> f32;
 }
@@ -12,7 +14,6 @@ impl<T: Billable> Pointworthy for T {
     }
 }
 
-#[allow(dead_code)]
 pub enum ShirtSize {
     Small,
     Medium,
@@ -31,7 +32,6 @@ impl CodingWork {
     }
 }
 
-// Implement Billable for all slices of Billables by adding up totals
 impl<T: Billable, const C: usize> Billable for [T; C] {
     fn total(&self) -> f32 {
         self.iter().map(|b| b.total()).sum()
@@ -50,6 +50,21 @@ impl Billable for CodingWork {
     }
 }
 
-pub fn print_points(b: &impl Pointworthy) {
-    println!("Points: {}", b.points());
+fn print_points(label: &str, item: &impl Pointworthy) {
+    println!("{label}: {} points", item.points());
+}
+
+pub fn run() {
+    println!("\n== Blanket implementations ==");
+
+    let single_item = CodingWork::new(ShirtSize::Epic);
+    print_points("single billable item", &single_item);
+
+    let sprint = [
+        CodingWork::new(ShirtSize::Small),
+        CodingWork::new(ShirtSize::Medium),
+        CodingWork::new(ShirtSize::Large),
+        CodingWork::new(ShirtSize::ExtraLarge),
+    ];
+    print_points("array of billable items", &sprint);
 }

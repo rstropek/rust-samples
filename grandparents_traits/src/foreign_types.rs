@@ -1,4 +1,4 @@
-use std::ops::Deref;
+//! Local traits can be implemented for foreign types. Foreign traits require a local type.
 
 pub trait Billable {
     fn total(&self) -> f32;
@@ -10,30 +10,38 @@ impl Billable for f32 {
     }
 }
 
-pub fn print_total(b: &impl Billable) {
-    println!("Total: ${:.2}", b.total());
-}
+#[derive(Debug, PartialEq)]
+struct FlatFee(pub f32);
 
-// The following code does not work because f32 is a foreign type
-// and Default is also not included in the current crate.
-// impl Default for f32 {
-//     fn default() -> Self {
-//         -1.0
-//     }
-// }
-
-pub struct MyF32(pub f32); // Newtype pattern
-
-impl Deref for MyF32 {
-    type Target = f32;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl Default for MyF32 {
+// `Default` is a foreign trait, so we need the local `FlatFee` newtype.
+impl Default for FlatFee {
     fn default() -> Self {
-        MyF32(-1.0)
+        FlatFee(0.0)
     }
+}
+
+impl Billable for FlatFee {
+    fn total(&self) -> f32 {
+        self.0
+    }
+}
+
+fn print_total(label: &str, item: &impl Billable) {
+    println!("{label}: ${:.2}", item.total());
+}
+
+pub fn run() {
+    println!("\n== Foreign types, local traits, and the newtype pattern ==");
+
+    let flat_amount = 500.0_f32;
+    print_total(
+        "local Billable trait implemented for foreign f32",
+        &flat_amount,
+    );
+
+    let default_fee = FlatFee::default();
+    print_total(
+        "foreign Default trait implemented for local FlatFee",
+        &default_fee,
+    );
 }
